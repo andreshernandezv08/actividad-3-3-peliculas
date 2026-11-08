@@ -1,0 +1,11 @@
+UNIVERSIDAD DE GUADALAJARA — UDGVirtual
+Actividad: 3.3. Aplicación web con base de datos
+Aplicación: Filmoteca — Catálogo de películas
+Alumno: Andrés Emilio Hernández Vázquez
+
+URL DE LA APLICACIÓN:
+[PEGA AQUÍ LA URL REAL QUE TE DÉ RENDER DESPUÉS DEL DESPLIEGUE]
+
+La aplicación permite consultar todos los registros, consultar registros individuales, agregar, editar y eliminar películas. Los datos se almacenan en PostgreSQL.
+
+NOTA: no entregar este archivo con el marcador pendiente. Copia los datos y la URL a un documento Word con tu portada institucional.

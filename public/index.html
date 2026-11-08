@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0c1220" />
+    <meta
+      name="description"
+      content="Aplicación web de catálogo de películas con base de datos PostgreSQL y operaciones CRUD."
+    />
+    <title>Filmoteca — Mi catálogo de películas</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <div class="site-shell">
+      <aside class="sidebar" aria-label="Menú principal">
+        <a class="brand" href="/" aria-label="Filmoteca, inicio"
+          ><span class="brand-icon">F</span
+          ><span>filmo<span class="brand-accent">teca.</span></span></a
+        >
+        <div class="side-section-label">MI ESPACIO</div>
+        <div class="nav-current">
+          <span class="nav-icon" aria-hidden="true">▦</span> Mi colección
+          <span class="nav-dot"></span>
+        </div>
+        <div class="side-section-label about-label">SOBRE ESTA APP</div>
+        <div class="about-card">
+          <span class="about-dot"></span>
+          <div>
+            <strong>Base de datos activa</strong
+            ><small>PostgreSQL · CRUD</small>
+          </div>
+        </div>
+        <p class="aside-footnote">
+          Proyecto académico<br />Actividad 3.3 · Aplicación web con base de
+          datos
+        </p>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <span class="eyebrow">TU ESPACIO DE CINE</span>
+            <h1>Mi colección de películas<span class="title-dot">.</span></h1>
+            <p>
+              Organiza, descubre y lleva el control de las películas que más te
+              gustan.
+            </p>
+          </div>
+          <button id="addButton" class="btn btn-primary" type="button">
+            <span class="plus-icon">+</span> Agregar película
+          </button>
+        </header>
+        <section class="stats" aria-label="Resumen de la colección">
+          <div class="stat-card">
+            <span class="stat-label">TOTAL DE PELÍCULAS</span>
+            <div class="stat-value" id="totalCount">—</div>
+            <span class="stat-help">En tu colección</span
+            ><span class="stat-art art-1">◫</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">PELÍCULAS VISTAS</span>
+            <div class="stat-value" id="seenCount">—</div>
+            <span class="stat-help">Incluye tus favoritas</span
+            ><span class="stat-art art-2">◉</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">MIS FAVORITAS</span>
+            <div class="stat-value" id="favoriteCount">—</div>
+            <span class="stat-help">Las que volverías a ver</span
+            ><span class="stat-art art-3">✦</span>
+          </div>
+        </section>
+        <section class="collection" aria-labelledby="collectionTitle">
+          <div class="collection-head">
+            <div>
+              <span class="eyebrow">BIBLIOTECA PERSONAL</span>
+              <h2 id="collectionTitle">
+                Todas las películas
+                <span class="count-pill" id="collectionCount">0</span>
+              </h2>
+            </div>
+            <div class="collection-tools">
+              <label class="search"
+                ><span class="search-icon" aria-hidden="true">⌕</span
+                ><span class="sr-only">Buscar películas</span
+                ><input
+                  id="searchInput"
+                  type="search"
+                  placeholder="Buscar por título o director..." /></label
+              ><select id="stateFilter" aria-label="Filtrar por estado">
+                <option value="">Todos los estados</option>
+                <option value="Pendiente">Pendientes</option>
+                <option value="Vista">Vistas</option>
+                <option value="Favorita">Favoritas</option>
+              </select>
+            </div>
+          </div>
+          <div
+            id="message"
+            class="message"
+            role="status"
+            aria-live="polite"
+          ></div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>PELÍCULA</th>
+                  <th>GÉNERO</th>
+                  <th>AÑO</th>
+                  <th>ESTADO</th>
+                  <th class="actions-col">ACCIONES</th>
+                </tr>
+              </thead>
+              <tbody id="movieRows">
+                <tr>
+                  <td colspan="5" class="empty-cell">
+                    Cargando tu colección...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="collection-foot">
+            <span id="recordSummary"
+              >Consulta los registros almacenados en PostgreSQL.</span
+            ><span class="footer-bullet">●</span
+            ><span>Datos guardados en la nube</span>
+          </div>
+        </section>
+        <footer class="site-footer">
+          Filmoteca · Actividad 3.3 · Interfaz y base de datos
+        </footer>
+      </main>
+    </div>
+
+    <dialog id="movieDialog" class="modal" aria-labelledby="modalTitle">
+      <form id="movieForm" novalidate>
+        <div class="modal-head">
+          <div>
+            <span class="eyebrow">MI COLECCIÓN</span>
+            <h2 id="modalTitle">Nueva película</h2>
+          </div>
+          <button
+            class="icon-btn close-btn"
+            id="closeFormButton"
+            type="button"
+            aria-label="Cerrar"
+          >
+            ×
+          </button>
+        </div>
+        <div class="form-fields">
+          <label
+            >Título
+            <input
+              name="titulo"
+              id="fieldTitulo"
+              maxlength="120"
+              required
+              placeholder="Ej. Interstellar" /></label
+          ><label
+            >Director
+            <input
+              name="director"
+              id="fieldDirector"
+              maxlength="120"
+              required
+              placeholder="Ej. Christopher Nolan"
+          /></label>
+          <div class="field-pair">
+            <label
+              >Género
+              <input
+                name="genero"
+                id="fieldGenero"
+                maxlength="120"
+                required
+                placeholder="Ej. Ciencia ficción" /></label
+            ><label
+              >Año
+              <input
+                name="anio"
+                id="fieldAnio"
+                type="number"
+                min="1888"
+                max="2100"
+                required
+                placeholder="2014"
+            /></label>
+          </div>
+          <label
+            >Estado
+            <select name="estado" id="fieldEstado">
+              <option value="Pendiente">Pendiente</option>
+              <option value="Vista">Vista</option>
+              <option value="Favorita">Favorita</option>
+            </select></label
+          >
+        </div>
+        <p id="formError" class="form-error" role="alert"></p>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="cancelFormButton" type="button">
+            Cancelar</button
+          ><button class="btn btn-primary" id="saveMovieButton" type="submit">
+            Guardar película
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog
+      id="detailDialog"
+      class="modal detail-modal"
+      aria-labelledby="detailTitle"
+    >
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow">FICHA DE PELÍCULA</span>
+          <h2 id="detailTitle">Detalles</h2>
+        </div>
+        <button
+          class="icon-btn close-btn"
+          id="closeDetailButton"
+          type="button"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+      </div>
+      <dl class="details-list" id="detailsList"></dl>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="detailCloseButton" type="button">
+          Cerrar</button
+        ><button class="btn btn-primary" id="detailEditButton" type="button">
+          Editar registro
+        </button>
+      </div>
+    </dialog>
+  </body>
+</html>
